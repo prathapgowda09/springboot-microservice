@@ -1,9 +1,12 @@
 package com.partha.ios.resource;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.partha.ios.resource.model.CatalogItem;
 import com.partha.ios.resource.model.Movie;
 import com.partha.ios.resource.model.Rating;
 import com.partha.ios.resource.model.UserRating;
+import com.partha.ios.resource.service.MovieInfo;
+import com.partha.ios.resource.service.UserRatingInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,18 +31,22 @@ public class MovieCatalogResource {
     @Autowired
     private  WebClient.Builder webClientBuilder;
 
+    @Autowired
+    MovieInfo movieInfo;
+
+    @Autowired
+    UserRatingInfo userRatingInfo;
+
     @GetMapping("/{userId}")
+    //@HystrixCommand(fallbackMethod = "getFallbackCatalog")
     public List<CatalogItem> getCatalog(@PathVariable("userId") String userId) {
 
 
-        UserRating userRating = restTemplate.getForObject("http://movie-rating-service/ratings/user/" + userId, UserRating.class);
+        UserRating userRating = userRatingInfo.getUserRating(userId);
 
-        return userRating.getUserRating().stream().map(rating -> {
-
-            Movie movie = restTemplate.getForObject("http://movie-info-service/movies/" + rating.getMovieId(), Movie.class);
-
-            return new CatalogItem(movie.getName(), "Good Movie", rating.getRating());
-        }).collect(Collectors.toList());
+        return userRating.getUserRating().stream()
+                .map(rating -> movieInfo.getCatalogItem(rating))
+                .collect(Collectors.toList());
 
             /*
             //another way to communicate with movie-info-service
@@ -51,4 +58,13 @@ public class MovieCatalogResource {
                     .block();
             */
     }
+
+
+
+//    public List<CatalogItem> getFallbackCatalog(@PathVariable("userId") String userId) {
+//        return  Arrays.asList(new CatalogItem("No Movie","",0));
+//    }
+
+
+
 }

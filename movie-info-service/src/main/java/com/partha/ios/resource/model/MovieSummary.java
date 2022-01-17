@@ -1,16 +1,17 @@
 package com.partha.ios.resource.model;
 
-public class Movie {
+public class MovieSummary {
 
     private String movieId;
-    private String name;
+    private String title;
     private String overview;
 
-    public Movie() {
+    public  MovieSummary(){
+
     }
-    public Movie(String movieId, String name, String overview) {
+    public MovieSummary(String movieId, String title, String overview) {
         this.movieId = movieId;
-        this.name = name;
+        this.title = title;
         this.overview = overview;
     }
 
@@ -22,12 +23,12 @@ public class Movie {
         this.movieId = movieId;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getOverview() {
