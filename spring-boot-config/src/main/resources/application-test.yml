@@ -1,0 +1,27 @@
+
+app:
+    name :  my app
+    description :  App desc for ${app.name}
+
+my:
+   greeting :  Hello World!
+   list:
+     values :  one,two,three
+
+
+
+db:
+   connection :  test-connection-string
+   host :  1239.0.0.3
+   port :  8639
+
+
+
+management.endpoints.web.exposure.include: "*"
+
+#spring.application.name : spring-boot-config
+dbValues :  "{connectionString: 'http://____',username:'root', password:'root'}"
+
+
+
+
